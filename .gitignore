@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# next.js build
+.next/
+out/
+build/
+
+# bun
+.bun/
+bun-cache/
+
+# env files
+.env
+.env.*
+!.env.example
+
+# vercel
+.vercel/
+
+# turbo
+.turbo/
+
+# logs
+*.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
