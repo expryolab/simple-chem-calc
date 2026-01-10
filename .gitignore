@@ -28,3 +28,5 @@ bun-cache/
 .DS_Store
 .idea/
 .vscode/
+
+*storybook.log

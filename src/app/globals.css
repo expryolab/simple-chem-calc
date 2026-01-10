@@ -12,15 +12,44 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  h1 {
+    @apply text-4xl font-bold text-black;
+  }
+  h2 {
+    @apply text-3xl font-semibold text-black;
+  }
+  h3 {
+    @apply text-2xl font-medium text-black;
+  }
+  h4 {
+    @apply text-xl font-normal text-black;
+  }
+}
+
+@layer utilities {
+  .NavigationMenuRoot {
+    @apply text-black text-3xl flex items-center gap-2 h-12 px-3 rounded-md;
+  }
+  .NavigationMenuSubRoot {
+    @apply text-black text-xl flex items-center gap-2 h-12 px-3 rounded-md;
+  }
+  .NavigationMenuList {
+    @apply flex space-x-1;
+  }
+  .NavigationMenuLink {
+  }
 }
