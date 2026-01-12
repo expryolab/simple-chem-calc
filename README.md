@@ -46,3 +46,9 @@ bun + Next
 -->
 
 ### インストール
+
+bun install
+
+### 開発環境でアプリを起動
+
+bun run dev
