@@ -3,6 +3,7 @@ import { FaCalculator } from "react-icons/fa";
 import { MdOutlineScale } from "react-icons/md";
 import { MdScale } from "react-icons/md";
 import { RiScales2Fill } from "react-icons/ri";
+import { CiBeaker1 } from "react-icons/ci";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 
@@ -18,7 +19,6 @@ export const NaviBar = () => {
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>
-
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild className="">
             <Link href="/proportion" className="NavigationMenuRoot">
@@ -31,6 +31,14 @@ export const NaviBar = () => {
           <NavigationMenu.Link asChild className="">
             <Link href="/prorate" className="NavigationMenuRoot">
               <MdScale className="inline-block mr-2 mb-1" />% → 実量
+            </Link>
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
+        <NavigationMenu.Item>
+          <NavigationMenu.Link asChild className="">
+            <Link href="/percent" className="NavigationMenuRoot">
+              <CiBeaker1 className="inline-block mr-2 mb-1" />
+              濃度計算
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>
