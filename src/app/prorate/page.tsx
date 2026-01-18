@@ -44,7 +44,13 @@ const Page = () => {
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { inputs: [{ inputTitle: "", inputValue: "" }] }, // 初期状態で2つの入力ボックスを設定
+    defaultValues: {
+      inputs: [
+        { inputTitle: "", inputValue: "" },
+        { inputTitle: "", inputValue: "" },
+        { inputTitle: "", inputValue: "" },
+      ],
+    }, // 初期状態で3つの入力ボックスを設定
   });
 
   const { fields, append, remove } = useFieldArray<FormValues, "inputs", "id">({
