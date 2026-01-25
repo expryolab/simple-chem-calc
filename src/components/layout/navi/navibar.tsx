@@ -4,6 +4,7 @@ import { MdOutlineScale } from "react-icons/md";
 import { MdScale } from "react-icons/md";
 import { RiScales2Fill } from "react-icons/ri";
 import { CiBeaker1 } from "react-icons/ci";
+import { IoIosBeaker } from "react-icons/io";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 
@@ -39,6 +40,14 @@ export const NaviBar = () => {
             <Link href="/percent" className="NavigationMenuRoot">
               <CiBeaker1 className="inline-block mr-2 mb-1" />
               濃度計算
+            </Link>
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
+        <NavigationMenu.Item>
+          <NavigationMenu.Link asChild className="">
+            <Link href="/dilution" className="NavigationMenuRoot">
+              <IoIosBeaker className="inline-block mr-2 mb-1" />
+              希釈計算
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>
