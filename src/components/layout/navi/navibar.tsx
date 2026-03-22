@@ -20,20 +20,23 @@ export const NaviBar = () => {
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>
-        <NavigationMenu.Item>
-          <NavigationMenu.Link asChild className="">
-            <Link href="/proportion" className="NavigationMenuRoot">
-              <MdOutlineScale className="inline-block mr-2 mb-1" />
-              実量 → %
-            </Link>
-          </NavigationMenu.Link>
-        </NavigationMenu.Item>
-        <NavigationMenu.Item>
-          <NavigationMenu.Link asChild className="">
-            <Link href="/prorate" className="NavigationMenuRoot">
-              <MdScale className="inline-block mr-2 mb-1" />% → 実量
-            </Link>
-          </NavigationMenu.Link>
+        <NavigationMenu.Item className="relative">
+          <NavigationMenu.Trigger className="NavigationMenuRoot">
+            %計算
+          </NavigationMenu.Trigger>
+          <NavigationMenu.Content className="NavigationMenuContent">
+            <NavigationMenu.Link asChild className="">
+              <Link href="/proportion" className="NavigationMenuSubRoot">
+                <MdOutlineScale className="inline-block mr-2 mb-1" />
+                実量 → %
+              </Link>
+            </NavigationMenu.Link>
+            <NavigationMenu.Link asChild className="">
+              <Link href="/prorate" className="NavigationMenuSubRoot">
+                <MdScale className="inline-block mr-2 mb-1" />% → 実量
+              </Link>
+            </NavigationMenu.Link>
+          </NavigationMenu.Content>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild className="">
@@ -51,13 +54,27 @@ export const NaviBar = () => {
             </Link>
           </NavigationMenu.Link>
         </NavigationMenu.Item>
-        <NavigationMenu.Item>
-          <NavigationMenu.Link asChild className="">
-            <Link href="/serving-scale" className="NavigationMenuSubRoot">
-              <RiScales2Fill className="inline-block mr-2 mb-1" />
-              料理を作る時の分量調整
-            </Link>
-          </NavigationMenu.Link>
+        <NavigationMenu.Item className="relative">
+          <NavigationMenu.Trigger className="NavigationMenuRoot">
+            おまけ
+          </NavigationMenu.Trigger>
+          <NavigationMenu.Content className="NavigationMenuContent">
+            <NavigationMenu.Link asChild className="">
+              <Link
+                href="/bonus/serving-scale"
+                className="NavigationMenuSubRoot"
+              >
+                <RiScales2Fill className="inline-block mr-2 mb-1" />
+                料理を作る時の分量調整
+              </Link>
+            </NavigationMenu.Link>
+            {/* <NavigationMenu.Link asChild className="">
+              <Link href="/bonus/jyotai" className="NavigationMenuSubRoot">
+                <RiScales2Fill className="inline-block mr-2 mb-1" />
+                jyotaiテスト
+              </Link>
+            </NavigationMenu.Link> */}
+          </NavigationMenu.Content>
         </NavigationMenu.Item>
       </NavigationMenu.List>
     </NavigationMenu.Root>

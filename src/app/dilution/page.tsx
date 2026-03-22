@@ -2,6 +2,9 @@
 import { Button } from "@/components/ui/Button";
 import { useDilutionForm } from "./hooks";
 
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css";
+
 const Page = () => {
   const {
     register,
@@ -16,6 +19,9 @@ const Page = () => {
   return (
     <main className="p-6 space-y-4 w-full">
       <p>希釈に必要な原液の量が計算できます。</p>
+      <div>
+        <BlockMath math="C_1 V_1 = C_2 V_2" />
+      </div>
       <p className="font-semibold text-indigo-700">
         ※ 単位は自由です（入力と結果は同じ単位になります）
       </p>
