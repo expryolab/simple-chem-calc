@@ -38,8 +38,8 @@ export default function RootLayout({
           <div className="w-1/5 mt-5">
             <NaviBar />
           </div>
-          <div className="w-3/5">
-            <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-16 px-8 bg-white sm:items-start">
+          <div className="w-4/5">
+            <main className="flex min-h-screen w-full flex-col items-center justify-between py-16 px-8 bg-white sm:items-start">
               {children}
             </main>
           </div>
