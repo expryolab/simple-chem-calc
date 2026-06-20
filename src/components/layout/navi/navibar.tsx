@@ -23,37 +23,37 @@ export const NaviBar = () => {
         </NavigationMenu.Item>
         <NavigationMenu.Item className="relative">
           <NavigationMenu.Trigger className="NavigationMenuRoot">
-            %計算
+            溶液濃度計算
           </NavigationMenu.Trigger>
           <NavigationMenu.Content className="NavigationMenuContent">
+            <p className="text-xs font-semibold text-gray-400 px-3 pt-1 pb-0.5 uppercase tracking-wide">
+              %計算
+            </p>
             <NavigationMenu.Link asChild className="">
-              <Link href="/proportion" className="NavigationMenuSubRoot">
+              <Link href="/proportion" className="NavigationMenuSubRoot pl-6">
                 <MdOutlineScale className="inline-block mr-2 mb-1" />
                 実量 → %
               </Link>
             </NavigationMenu.Link>
             <NavigationMenu.Link asChild className="">
-              <Link href="/prorate" className="NavigationMenuSubRoot">
+              <Link href="/prorate" className="NavigationMenuSubRoot pl-6">
                 <MdScale className="inline-block mr-2 mb-1" />% → 実量
               </Link>
             </NavigationMenu.Link>
+            <div className="border-t border-gray-100 my-1" />
+            <NavigationMenu.Link asChild className="">
+              <Link href="/percent" className="NavigationMenuSubRoot">
+                <CiBeaker1 className="inline-block mr-2 mb-1" />
+                濃度計算
+              </Link>
+            </NavigationMenu.Link>
+            <NavigationMenu.Link asChild className="">
+              <Link href="/dilution" className="NavigationMenuSubRoot">
+                <IoIosBeaker className="inline-block mr-2 mb-1" />
+                希釈計算
+              </Link>
+            </NavigationMenu.Link>
           </NavigationMenu.Content>
-        </NavigationMenu.Item>
-        <NavigationMenu.Item>
-          <NavigationMenu.Link asChild className="">
-            <Link href="/percent" className="NavigationMenuRoot">
-              <CiBeaker1 className="inline-block mr-2 mb-1" />
-              濃度計算
-            </Link>
-          </NavigationMenu.Link>
-        </NavigationMenu.Item>
-        <NavigationMenu.Item>
-          <NavigationMenu.Link asChild className="">
-            <Link href="/dilution" className="NavigationMenuRoot">
-              <IoIosBeaker className="inline-block mr-2 mb-1" />
-              希釈計算
-            </Link>
-          </NavigationMenu.Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item className="relative">
           <NavigationMenu.Trigger className="NavigationMenuRoot">
