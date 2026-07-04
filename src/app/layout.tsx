@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/layout/header/header";
-import { NaviBar } from "@/components/layout/navi/navibar";
+import { Sidebar } from "@/components/layout/sidebar";
+import { SidebarProvider } from "@/components/layout/sidebar-context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "ちょっと便利な計算ツール",
-  description: "こんな計算できたらいいなっと思うことをサイトにしました",
+  description: "実験計画法の計算もできます",
 };
 
 export default function RootLayout({
@@ -31,19 +32,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header>
-          <Header />
-        </header>
-        <div className="flex min-h-screen bg-zinc-50">
-          <div className="w-1/5 mt-5">
-            <NaviBar />
+        <SidebarProvider>
+          <header>
+            <Header />
+          </header>
+          <div className="flex min-h-screen bg-zinc-50">
+            <Sidebar />
+            <div className="flex-1 min-w-0">
+              <main className="flex min-h-screen w-full flex-col items-center justify-between py-16 px-8 bg-white sm:items-start">
+                {children}
+              </main>
+            </div>
           </div>
-          <div className="w-4/5">
-            <main className="flex min-h-screen w-full flex-col items-center justify-between py-16 px-8 bg-white sm:items-start">
-              {children}
-            </main>
-          </div>
-        </div>
+        </SidebarProvider>
         <Analytics />
         <SpeedInsights />
       </body>

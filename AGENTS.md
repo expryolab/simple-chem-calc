@@ -52,7 +52,10 @@ src/
 │   ├── proportion/             # 実量 → %（複数成分の割合計算）
 │   ├── prorate/                # % → 実量（逆算）
 │   ├── exp-design/
-│   │   └── orthogonal-array-l8/  # 実験計画法 L(8)直交表
+│   │   ├── orthogonal-array-l8/  # 実験計画法 L(8)直交表（2水準・最大7因子）
+│   │   │   └── components/L8Simple.tsx
+│   │   └── orthogonal-array-l9/  # 実験計画法 L(9)直交表（3水準・最大4因子）
+│   │       └── components/L9Simple.tsx
 │   └── bonus/
 │       ├── alcohol/            # お酒のアルコール量計算
 │       ├── serving-scale/      # 料理の分量調整
@@ -101,6 +104,29 @@ Tailwind CSS v4 のユーティリティクラスを直接使う。共通ボタ�
 ### 数式表示
 
 KaTeX を使う場合は `react-katex` の `BlockMath` / `InlineMath` を使い、`"katex/dist/katex.min.css"` を必ずインポートする。
+
+### 実験計画法ページの実装パターン
+
+`exp-design/` 配下の直交表ページは以下の構造で統一する。
+
+- `page.tsx` — `"use client"` を付け、`components/L*Simple.tsx` をインポートして描画するだけ
+- `layout.tsx` — `"use client"` を付け、`<div>{children}</div>` を返すだけ
+- `components/L*Simple.tsx` — 直交表の定数配列・因子状態・ANOVA計算・UIをすべて持つ
+
+**L8 と L9 の主な違い**
+
+| 項目 | L8 | L9 |
+|---|---|---|
+| 直交表 | 8ラン × 7列 | 9ラン × 4列 |
+| 水準数 | 2水準 | 3水準 |
+| 最大因子数 | 7 | 4 |
+| 各因子の自由度 | 1 | 2 |
+| 全体の自由度 | 7 | 8 |
+| 因子入力フィールド | level1, level2 | level1, level2, level3 |
+
+**因子定義行のグリッド（L9）**
+
+`grid-cols-12` で `C列(1) + 因子名(3) + 水準1(2) + 水準2(2) + 水準3(2) + 削除(2) = 12` に収める。水準入力を均等に `col-span-2` にすることで1行に収まる。
 
 ### ナビゲーションへの追加
 
