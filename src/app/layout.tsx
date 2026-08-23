@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ちょっと便利な計算ツール",
+  title: "実験室で使えるちょっと便利な計算ツール",
   description: "実験計画法の計算もできます",
 };
 
@@ -39,7 +39,7 @@ export default function RootLayout({
           <div className="flex min-h-screen bg-zinc-50">
             <Sidebar />
             <div className="flex-1 min-w-0">
-              <main className="flex min-h-screen w-full flex-col items-center justify-between py-16 px-8 bg-white sm:items-start">
+              <main className="flex min-h-screen w-full flex-col items-center py-16 px-8 bg-white sm:items-start">
                 {children}
               </main>
             </div>
