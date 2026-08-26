@@ -30,11 +30,13 @@ const Page = () => {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        <div className="flex items-center gap-3">
-          <label className="w-56 text-lg text-right">希望する溶液の量：</label>
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <label className="text-lg md:w-56 md:text-right">
+            希望する溶液の量：
+          </label>
           <div className="flex flex-col">
             <input
-              className="w-48 h-9 border border-gray-900 border-solid rounded-lg text-lg px-2"
+              className="w-full h-9 border border-gray-900 border-solid rounded-lg text-lg px-2 md:w-48"
               {...register("desiredVolume")}
             />
             {errors.desiredVolume?.message && (
@@ -44,13 +46,13 @@ const Page = () => {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <label className="w-56 text-lg text-right">
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <label className="text-lg md:w-56 md:text-right">
             希望する溶液の濃度(%)：
           </label>
           <div className="flex flex-col">
             <input
-              className="w-48 h-9 border border-gray-900 border-solid rounded-lg text-lg px-2"
+              className="w-full h-9 border border-gray-900 border-solid rounded-lg text-lg px-2 md:w-48"
               {...register("desiredConcentration")}
             />
             {errors.desiredConcentration?.message && (
@@ -60,11 +62,13 @@ const Page = () => {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <label className="w-56 text-lg text-right">原液の濃度(%)：</label>
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <label className="text-lg md:w-56 md:text-right">
+            原液の濃度(%)：
+          </label>
           <div className="flex flex-col">
             <input
-              className="w-48 h-9 border border-gray-900 border-solid rounded-lg text-lg px-2"
+              className="w-full h-9 border border-gray-900 border-solid rounded-lg text-lg px-2 md:w-48"
               {...register("stockConcentration")}
             />
             {errors.stockConcentration?.message && (

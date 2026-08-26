@@ -96,11 +96,11 @@ const Page = () => {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        <div className="flex items-center gap-3">
-          <label className="w-48 text-lg text-right">お酒の種類：</label>
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <label className="text-lg md:w-48 md:text-right">お酒の種類：</label>
           <div className="flex flex-col">
             <input
-              className="w-48 h-9 border border-gray-900 border-solid rounded-lg text-lg px-2"
+              className="w-full h-9 border border-gray-900 border-solid rounded-lg text-lg px-2 md:w-48"
               placeholder="例: ビール"
               {...register("name")}
             />
@@ -110,11 +110,13 @@ const Page = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <label className="w-48 text-lg text-right">お酒の量 (ml)：</label>
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <label className="text-lg md:w-48 md:text-right">
+            お酒の量 (ml)：
+          </label>
           <div className="flex flex-col">
             <input
-              className="w-48 h-9 border border-gray-900 border-solid rounded-lg text-lg px-2"
+              className="w-full h-9 border border-gray-900 border-solid rounded-lg text-lg px-2 md:w-48"
               inputMode="decimal"
               placeholder="例: 350"
               {...register("volume")}
@@ -127,11 +129,11 @@ const Page = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <label className="w-48 text-lg text-right">度数 (%)：</label>
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <label className="text-lg md:w-48 md:text-right">度数 (%)：</label>
           <div className="flex flex-col">
             <input
-              className="w-48 h-9 border border-gray-900 border-solid rounded-lg text-lg px-2"
+              className="w-full h-9 border border-gray-900 border-solid rounded-lg text-lg px-2 md:w-48"
               inputMode="decimal"
               placeholder="例: 5"
               {...register("percentage")}
