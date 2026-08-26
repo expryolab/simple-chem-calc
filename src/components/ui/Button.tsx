@@ -19,7 +19,7 @@ function cn(...classes: Array<string | undefined | false>) {
 }
 
 const base =
-  "inline-flex items-center justify-center font-medium " +
+  "inline-flex items-center justify-center whitespace-nowrap font-medium " +
   "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 " +
   "disabled:pointer-events-none disabled:opacity-50";
 
@@ -31,7 +31,7 @@ const variants: Record<ButtonVariant, string> = {
 };
 
 const sizes: Record<ButtonSize, string> = {
-  md: "rounded-lg px-4 w-36 h-10",
+  md: "rounded-lg px-4 min-w-36 h-10",
 };
 
 const textSizes: Record<ButtonTextSize, string> = {

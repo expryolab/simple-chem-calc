@@ -10,7 +10,7 @@ export default function Home() {
         とりあえず実験計画法試してみたいという方は
         <Link
           href="/exp-design/orthogonal-array-l8"
-          className="text-indigo-600 underline hover:text-indigo-800"
+          className="whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
         >
           こちら
         </Link>
@@ -23,7 +23,7 @@ export default function Home() {
             実量から%濃度を計算する（実量 → %）
             <Link
               href="/proportion"
-              className="ml-2 text-indigo-600 underline hover:text-indigo-800"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
             >
               こちら
             </Link>
@@ -32,7 +32,7 @@ export default function Home() {
             %濃度から実量を計算する（% → 実量）
             <Link
               href="/prorate"
-              className="ml-2 text-indigo-600 underline hover:text-indigo-800"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
             >
               こちら
             </Link>
@@ -41,7 +41,7 @@ export default function Home() {
             溶液の濃度を計算する
             <Link
               href="/percent"
-              className="ml-2 text-indigo-600 underline hover:text-indigo-800"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
             >
               こちら
             </Link>
@@ -50,7 +50,7 @@ export default function Home() {
             溶液の希釈計算をする
             <Link
               href="/dilution"
-              className="ml-2 text-indigo-600 underline hover:text-indigo-800"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
             >
               こちら
             </Link>
@@ -59,7 +59,7 @@ export default function Home() {
             実験計画法の直交表（L8表・L9表）を確認する
             <Link
               href="/exp-design/orthogonal-array-l8"
-              className="ml-2 text-indigo-600 underline hover:text-indigo-800"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
             >
               こちら
             </Link>
@@ -68,7 +68,7 @@ export default function Home() {
             料理を作るときの分量を調整する
             <Link
               href="/bonus/serving-scale"
-              className="ml-2 text-indigo-600 underline hover:text-indigo-800"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
             >
               こちら
             </Link>
@@ -77,7 +77,7 @@ export default function Home() {
             お酒に含まれるアルコール量を計算する
             <Link
               href="/bonus/alcohol"
-              className="ml-2 text-indigo-600 underline hover:text-indigo-800"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
             >
               こちら
             </Link>

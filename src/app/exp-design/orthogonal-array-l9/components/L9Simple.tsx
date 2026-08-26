@@ -215,7 +215,7 @@ export default function L9Simple() {
         <p className="text-xs text-gray-500 mt-1">
           各実験ランの結果（応答値）を入力してください。
         </p>
-        <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
           {results.map((result, idx) => (
             <div key={idx} className="flex items-center gap-2">
               <label className="text-sm font-medium w-16 shrink-0">
@@ -224,7 +224,7 @@ export default function L9Simple() {
               <input
                 type="number"
                 step="any"
-                className="border rounded-lg px-3 py-2 text-sm flex-1"
+                className="min-w-0 flex-1 border rounded-lg px-3 py-2 text-sm"
                 value={result ?? ""}
                 onChange={(e) => {
                   const val = e.target.value;
