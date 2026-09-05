@@ -6,6 +6,7 @@ import { RiScales2Fill } from "react-icons/ri";
 import { CiBeaker1 } from "react-icons/ci";
 import { IoIosBeaker } from "react-icons/io";
 import { CiViewTable } from "react-icons/ci";
+import { MdScience } from "react-icons/md";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 
@@ -51,6 +52,12 @@ export const NaviBar = () => {
               <Link href="/dilution" className="NavigationMenuSubRoot">
                 <IoIosBeaker className="inline-block mr-2 mb-1" />
                 希釈計算
+              </Link>
+            </NavigationMenu.Link>
+            <NavigationMenu.Link asChild className="">
+              <Link href="/molarity" className="NavigationMenuSubRoot">
+                <MdScience className="inline-block mr-2 mb-1" />
+                モル濃度計算
               </Link>
             </NavigationMenu.Link>
           </NavigationMenu.Content>

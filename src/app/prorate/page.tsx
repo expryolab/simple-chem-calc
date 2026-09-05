@@ -89,7 +89,7 @@ const Page = () => {
 
   return (
     <>
-      <div className="flex flex-row">
+      <div className="flex flex-col md:flex-row">
         <div>
           <div className="mb-4">
             <label className="font-bold border-b-[3px] border-black inline-block mb-2 w-46 mr-2">
@@ -150,16 +150,16 @@ const Page = () => {
         </div>
         <div>
           {result.items.length > 0 && (
-            <div className="ml-6">
+            <div className="mt-6 md:mt-0 md:ml-6">
               <p className="font-bold">ほしい合計量: {result.desiredTotal}</p>
               <ul className="mt-2">
                 {result.items.map((item, idx) => (
                   <li key={idx} className="flex flex-row space-x-2">
-                    <span className="w-32">{item.title}</span>
-                    <span className="w-32">
+                    <span className="w-20 md:w-32">{item.title}</span>
+                    <span className="w-24 md:w-32">
                       割合: {item.percent.toFixed(1)}%
                     </span>
-                    <span className="w-40">実量: {item.amount.toFixed(2)}</span>
+                    <span className="w-28 md:w-40">実量: {item.amount.toFixed(2)}</span>
                   </li>
                 ))}
               </ul>

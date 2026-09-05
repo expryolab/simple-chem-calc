@@ -2,7 +2,7 @@ import { FaTwitter } from "react-icons/fa";
 
 const Page = () => {
   return (
-    <div className="w-315 mx-auto mt-2">
+    <div className="w-full md:w-315 mx-auto mt-2">
       <p className="text-lg font-medium">サイトの説明</p>
       <p className="">このサイトは、実験で使いそうな計算を行うサイトです。</p>
       <p className="">

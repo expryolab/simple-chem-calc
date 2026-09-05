@@ -88,7 +88,7 @@ const Page = () => {
 
   return (
     <>
-      <div className="flex flex-row">
+      <div className="flex flex-col md:flex-row">
         <div>
           <div className="mb-4">
             <label className="font-bold border-b-[3px] border-black inline-block mb-2 w-46 mr-2">
@@ -159,7 +159,7 @@ const Page = () => {
         </div>
         <div>
           {result.items.length > 0 && (
-            <div className="ml-6">
+            <div className="mt-6 md:mt-0 md:ml-6">
               <p className="font-bold">希望人前: {result.desiredTotal}</p>
               <ul className="mt-2">
                 {result.items.map((item, idx) => (
