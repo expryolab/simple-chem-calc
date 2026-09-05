@@ -38,6 +38,15 @@ export default function Home() {
             </Link>
           </li>
           <li>
+            重量部(phr)を計算する
+            <Link
+              href="/phr"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
+            >
+              こちら
+            </Link>
+          </li>
+          <li>
             溶液の濃度を計算する
             <Link
               href="/percent"
@@ -50,6 +59,15 @@ export default function Home() {
             溶液の希釈計算をする
             <Link
               href="/dilution"
+              className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
+            >
+              こちら
+            </Link>
+          </li>
+          <li>
+            モル濃度を計算する
+            <Link
+              href="/molarity"
               className="ml-2 whitespace-nowrap text-indigo-600 underline hover:text-indigo-800"
             >
               こちら

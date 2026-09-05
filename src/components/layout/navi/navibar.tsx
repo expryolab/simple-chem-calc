@@ -7,6 +7,7 @@ import { CiBeaker1 } from "react-icons/ci";
 import { IoIosBeaker } from "react-icons/io";
 import { CiViewTable } from "react-icons/ci";
 import { MdScience } from "react-icons/md";
+import { GiWeightScale } from "react-icons/gi";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 
@@ -41,7 +42,12 @@ export const NaviBar = () => {
                 <MdScale className="inline-block mr-2 mb-1" />% → 実量
               </Link>
             </NavigationMenu.Link>
-            <div className="border-t border-gray-100 my-1" />
+            <NavigationMenu.Link asChild className="">
+              <Link href="/phr" className="NavigationMenuSubRoot pl-6">
+                <GiWeightScale className="inline-block mr-2 mb-1" />
+                重量部(phr)計算
+              </Link>
+            </NavigationMenu.Link>
             <NavigationMenu.Link asChild className="">
               <Link href="/percent" className="NavigationMenuSubRoot">
                 <CiBeaker1 className="inline-block mr-2 mb-1" />
