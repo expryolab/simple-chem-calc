@@ -30,3 +30,8 @@ bun-cache/
 .vscode/
 
 *storybook.log
+
+# ssh keys
+*-ssh
+*-ssh.pub
+id_*
