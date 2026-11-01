@@ -84,6 +84,15 @@ export const NaviBar = () => {
             </NavigationMenu.Link>
             <NavigationMenu.Link asChild className="">
               <Link
+                href="/exp-design/orthogonal-array-l8-interaction"
+                className="NavigationMenuSubRoot"
+              >
+                <CiViewTable className="inline-block mr-2 mb-1" />
+                L(8)表（交互作用あり）
+              </Link>
+            </NavigationMenu.Link>
+            <NavigationMenu.Link asChild className="">
+              <Link
                 href="/exp-design/orthogonal-array-l9"
                 className="NavigationMenuSubRoot"
               >
