@@ -6,8 +6,10 @@ import { RiScales2Fill } from "react-icons/ri";
 import { CiBeaker1 } from "react-icons/ci";
 import { IoIosBeaker } from "react-icons/io";
 import { CiViewTable } from "react-icons/ci";
-import { MdScience } from "react-icons/md";
+import { MdScience, MdShowChart } from "react-icons/md";
 import { GiWeightScale } from "react-icons/gi";
+import { LuFlaskConical } from "react-icons/lu";
+import { TbMatrix } from "react-icons/tb";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 
@@ -25,6 +27,7 @@ export const NaviBar = () => {
         </NavigationMenu.Item>
         <NavigationMenu.Item className="relative">
           <NavigationMenu.Trigger className="NavigationMenuRoot">
+            <LuFlaskConical className="inline-block mr-2 mb-1" />
             溶液濃度計算
           </NavigationMenu.Trigger>
           <NavigationMenu.Content className="NavigationMenuContent">
@@ -68,8 +71,17 @@ export const NaviBar = () => {
             </NavigationMenu.Link>
           </NavigationMenu.Content>
         </NavigationMenu.Item>
+        <NavigationMenu.Item className="">
+          <NavigationMenu.Link asChild className="">
+            <Link href="/calibration" className="NavigationMenuRoot">
+              <MdShowChart className="inline-block mr-2 mb-1" />
+              検量線作成
+            </Link>
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
         <NavigationMenu.Item className="relative">
           <NavigationMenu.Trigger className="NavigationMenuRoot">
+            <TbMatrix className="inline-block mr-2 mb-1" />
             実験計画法
           </NavigationMenu.Trigger>
           <NavigationMenu.Content className="NavigationMenuContent">
