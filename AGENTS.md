@@ -54,6 +54,8 @@ src/
 │   ├── exp-design/
 │   │   ├── orthogonal-array-l8/  # 実験計画法 L(8)直交表（2水準・最大7因子）
 │   │   │   └── components/L8Simple.tsx
+│   │   ├── orthogonal-array-l8-interaction/  # L(8)直交表 交互作用あり（列を自動割り当て）
+│   │   │   └── components/L8Interaction.tsx
 │   │   └── orthogonal-array-l9/  # 実験計画法 L(9)直交表（3水準・最大4因子）
 │   │       └── components/L9Simple.tsx
 │   └── bonus/

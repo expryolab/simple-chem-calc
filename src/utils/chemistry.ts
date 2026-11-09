@@ -14,5 +14,18 @@ const formatResult = (value: number): string => {
   return value.toFixed(digits);
 };
 
-export { unitOptions, toGrams, formatResult };
+/**
+ * 有効数字で丸めてフォーマット（負の値・指数表記が必要な値にも対応）。
+ * 傾き・切片など符号を持ちうる値に使う。
+ */
+const formatSignificant = (value: number, digits = 4): string => {
+  if (!Number.isFinite(value)) return "—";
+  if (value === 0) return "0";
+  const abs = Math.abs(value);
+  if (abs >= 1e6 || abs < 1e-4) return value.toExponential(digits - 1);
+  // toPrecision の結果を Number に戻して末尾の不要な 0 を落とす
+  return String(Number(value.toPrecision(digits)));
+};
+
+export { unitOptions, toGrams, formatResult, formatSignificant };
 export type { Unit };

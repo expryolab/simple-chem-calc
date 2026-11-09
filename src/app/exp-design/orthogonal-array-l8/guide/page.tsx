@@ -74,7 +74,16 @@ const Page = () => {
       <section className="space-y-2">
         <h2 className="text-lg font-semibold">注意点</h2>
         <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
-          <li>このツールは主効果のみを扱い、因子同士の交互作用は考慮していません。</li>
+          <li>
+            このツールは主効果のみを扱い、因子同士の交互作用は考慮していません。交互作用を調べたい場合は
+            <Link
+              href="/exp-design/orthogonal-array-l8-interaction"
+              className="text-indigo-600 underline hover:text-indigo-800"
+            >
+              L8表（交互作用あり）
+            </Link>
+            を使ってください。
+          </li>
           <li>因子の並び順を変えると、割り当てられる列（C1, C2, ...）も変わるため、実験計画表も変わります。</li>
         </ul>
       </section>
