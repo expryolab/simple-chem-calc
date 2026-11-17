@@ -72,6 +72,24 @@ const Page = () => {
       </section>
 
       <section className="space-y-2">
+        <h2 className="text-lg font-semibold">5. グラフで確認する</h2>
+        <p className="text-sm text-gray-700">
+          分散分析表の下に、結果をグラフで表示します。
+        </p>
+        <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
+          <li>
+            要因効果図：因子ごとに水準1・水準2の平均値を線で結んだ図です。縦軸は全因子で共通なので、線の傾きが大きい因子ほど結果への影響が大きいと読み取れます。破線は全体平均です。
+          </li>
+          <li>
+            寄与率：各因子と誤差の寄与率を大きい順に並べた棒グラフです。誤差の棒が大きい場合は、取り上げていない要因やばらつきの影響が大きいことを示します。
+          </li>
+        </ul>
+        <p className="text-sm text-gray-700">
+          グラフの点や棒にカーソルを合わせると、正確な数値が表示されます。
+        </p>
+      </section>
+
+      <section className="space-y-2">
         <h2 className="text-lg font-semibold">注意点</h2>
         <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
           <li>

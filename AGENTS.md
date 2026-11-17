@@ -33,8 +33,11 @@ bun install          # 依存関係のインストール
 bun run dev          # 開発サーバー起動 (localhost:3000)
 bun run build        # プロダクションビルド
 bun run lint         # ESLint
+bun run test         # テスト (Vitest + React Testing Library)
 bun run storybook    # Storybook起動 (localhost:6006)
 ```
+
+テストは対象ファイルと同じ場所に `*.test.ts(x)` として置く（例: `src/app/exp-design/orthogonal-array-l8/anova.test.ts`）。設定は `vitest.config.mts` / `vitest.setup.ts`。
 
 ---
 

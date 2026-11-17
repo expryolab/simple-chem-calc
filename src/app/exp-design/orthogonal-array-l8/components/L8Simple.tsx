@@ -2,6 +2,8 @@
 
 //生成AIコード
 import React, { useMemo, useState } from "react";
+import { computeL8Anova, L8 } from "../anova";
+import { ContributionChart, MainEffectsChart } from "./L8Charts";
 
 /**
  * L8(2^7) 直交表 — 超シンプル版
@@ -10,18 +12,6 @@ import React, { useMemo, useState } from "react";
  * - 実験結果を入力して分散分析（ANOVA）を実施
  * できるだけ“読むコード”にしてあります。
  */
-
-// 行: 8 ラン、列: C1..C7。値は水準(1/2)
-const L8: readonly (1 | 2)[][] = [
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 2, 2, 2, 2],
-  [1, 2, 2, 1, 1, 2, 2],
-  [1, 2, 2, 2, 2, 1, 1],
-  [2, 1, 2, 1, 2, 1, 2],
-  [2, 1, 2, 2, 1, 2, 1],
-  [2, 2, 1, 1, 2, 2, 1],
-  [2, 2, 1, 2, 1, 1, 2],
-] as const;
 
 // 入力する因子 (2水準ラベルだけ)
 type Factor = { id: string; name: string; level1: string; level2: string };
@@ -61,86 +51,21 @@ export default function L8Simple() {
   }, [factors]);
 
   // 分散分析の計算
-  const anovaTable = useMemo(() => {
-    // 結果が全て入力されているかチェック
-    const validResults = results.filter((r) => r !== null) as number[];
-    if (validResults.length !== 8 || factors.length === 0) {
-      return null;
-    }
+  const anovaTable = useMemo(
+    () =>
+      computeL8Anova(
+        results,
+        factors.map((f) => f.name),
+      ),
+    [results, factors],
+  );
 
-    // 全体平均
-    const grandMean = validResults.reduce((a, b) => a + b, 0) / 8;
-    // 全体平方和
-    const totalSS = validResults.reduce(
-      (sum, val) => sum + Math.pow(val - grandMean, 2),
-      0,
-    );
-
-    // 各因子の効果を計算
-    const factorEffects = factors.map((factor, colIdx) => {
-      // この因子で水準1のランと水準2のランを抽出
-      const level1Runs: number[] = [];
-      const level2Runs: number[] = [];
-
-      L8.forEach((row, runIdx) => {
-        const level = row[colIdx];
-        const result = validResults[runIdx];
-        if (level === 1) {
-          level1Runs.push(result);
-        } else {
-          level2Runs.push(result);
-        }
-      });
-
-      // 各水準の平均
-      const mean1 = level1Runs.reduce((a, b) => a + b, 0) / level1Runs.length;
-      const mean2 = level2Runs.reduce((a, b) => a + b, 0) / level2Runs.length;
-
-      // 平方和 (SS)
-      const ss =
-        level1Runs.length * Math.pow(mean1 - grandMean, 2) +
-        level2Runs.length * Math.pow(mean2 - grandMean, 2);
-
-      // 自由度
-      const df = 1; // 2水準なので自由度は1
-
-      // 平均平方 (MS)
-      const ms = ss / df;
-
-      return {
-        name: factor.name,
-        ss,
-        df,
-        ms,
-        mean1,
-        mean2,
-        effect: mean2 - mean1,
-      };
-    });
-
-    // 因子の平方和の合計
-    const factorSS = factorEffects.reduce((sum, f) => sum + f.ss, 0);
-
-    // 誤差平方和
-    const errorSS = totalSS - factorSS;
-    const errorDf = 7 - factors.length; // 全体の自由度7 - 因子の自由度の合計
-    const errorMs = errorDf > 0 ? errorSS / errorDf : 0;
-
-    // 寄与率の計算
-    const contributions = factorEffects.map((f) => ({
-      ...f,
-      contribution: (f.ss / totalSS) * 100,
-    }));
-
-    return {
-      factorEffects: contributions,
-      totalSS,
-      errorSS,
-      errorDf,
-      errorMs,
-      grandMean,
-    };
-  }, [results, factors]);
+  // グラフ用：水準ラベルを効果に添える
+  const chartEffects = (anovaTable?.factorEffects ?? []).map((f, idx) => ({
+    ...f,
+    level1: factors[idx].level1,
+    level2: factors[idx].level2,
+  }));
 
   // 便利関数
   const addFactor = () => {
@@ -408,6 +333,47 @@ export default function L8Simple() {
         </section>
       )}
 
+      {/* グラフ */}
+      {anovaTable && (
+        <section className="bg-white rounded-2xl shadow p-4 space-y-6">
+          <h2 className="font-semibold">グラフ</h2>
+          <div>
+            <h3 className="font-semibold text-sm">要因効果図</h3>
+            <p className="text-xs text-gray-500 mt-1">
+              各因子の水準別平均を結んだ線です。傾きが大きいほど結果への影響が大きい因子です。破線は全体平均。
+            </p>
+            <div className="mt-3 overflow-x-auto">
+              <MainEffectsChart
+                effects={chartEffects}
+                grandMean={anovaTable.grandMean}
+              />
+            </div>
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm">寄与率</h3>
+            {anovaTable.totalSS > 0 ? (
+              <div className="mt-3">
+                <ContributionChart
+                  effects={chartEffects}
+                  errorContribution={
+                    anovaTable.errorDf > 0
+                      ? Math.max(
+                          0,
+                          (anovaTable.errorSS / anovaTable.totalSS) * 100,
+                        )
+                      : null
+                  }
+                />
+              </div>
+            ) : (
+              <p className="text-xs text-gray-500 mt-1">
+                結果がすべて同じ値のため、寄与率は計算できません。
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
       <details className="text-sm text-gray-600">
         <summary className="cursor-pointer font-medium">機能説明</summary>
         <ul className="list-disc ml-5 mt-2 space-y-1">
@@ -419,6 +385,7 @@ export default function L8Simple() {
           <li>実験結果を全て入力すると分散分析表が自動表示されます。</li>
           <li>平方和(SS)、寄与率、各因子の効果などを確認できます。</li>
           <li>効果：水準2の平均 - 水準1の平均。プラスなら水準2が有利。</li>
+          <li>グラフ：要因効果図と寄与率の棒グラフで結果を視覚的に確認できます。</li>
         </ul>
       </details>
     </div>
