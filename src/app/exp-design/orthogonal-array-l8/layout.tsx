@@ -1,4 +1,4 @@
 "use client";
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <div className="">{children}</div>;
+  return <div className="w-full md:w-auto">{children}</div>;
 }
