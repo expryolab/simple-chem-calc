@@ -172,7 +172,7 @@ export const MainEffectsChart = ({ effects, grandMean }: MainEffectsProps) => {
 };
 
 // ---------------------------------------------------------------------------
-// 寄与率の横棒グラフ：大きい順に並べる。誤差は灰色。
+// 寄与率の横棒グラフ：大きい順に並べる。交互作用は琥珀色、誤差は灰色。
 // ---------------------------------------------------------------------------
 
 const BAR_WIDTH = 480;
@@ -181,23 +181,39 @@ const BAR_PAD = { top: 8, right: 56, bottom: 28, left: 96 };
 
 type ContributionProps = {
   effects: FactorEffect[];
+  /** 交互作用（L8交互作用ありページ用）。因子とは色を変えて描く */
+  interactions?: { name: string; contribution: number }[];
   /** 誤差の自由度がない場合は null */
   errorContribution: number | null;
 };
 
+type BarKind = "factor" | "interaction" | "error";
+
+const BAR_FILL: Record<BarKind, string> = {
+  factor: "fill-indigo-500",
+  interaction: "fill-amber-500",
+  error: "fill-gray-300",
+};
+
 export const ContributionChart = ({
   effects,
+  interactions = [],
   errorContribution,
 }: ContributionProps) => {
-  const rows = [
+  const rows: { name: string; value: number; kind: BarKind }[] = [
     ...effects.map((e) => ({
       name: e.name,
       value: e.contribution,
-      isError: false,
+      kind: "factor" as const,
+    })),
+    ...interactions.map((x) => ({
+      name: x.name,
+      value: x.contribution,
+      kind: "interaction" as const,
     })),
     ...(errorContribution === null
       ? []
-      : [{ name: "誤差", value: errorContribution, isError: true }]),
+      : [{ name: "誤差", value: errorContribution, kind: "error" as const }]),
   ].sort((a, b) => b.value - a.value);
 
   const height = BAR_PAD.top + rows.length * BAR_ROW + BAR_PAD.bottom;
@@ -256,7 +272,7 @@ export const ContributionChart = ({
               width={Math.max(0, sx(r.value) - BAR_PAD.left)}
               height={BAR_ROW - 12}
               rx={3}
-              className={r.isError ? "fill-gray-300" : "fill-indigo-500"}
+              className={BAR_FILL[r.kind]}
             >
               <title>{`${r.name}: ${r.value.toFixed(2)}%`}</title>
             </rect>
@@ -280,5 +296,225 @@ export const ContributionChart = ({
         className="stroke-gray-500"
       />
     </svg>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// 交互作用図：横軸に因子Aの水準、因子Bの水準ごとに線を引く。
+// 線が平行なら交互作用は小さく、交差・開きが大きいほど交互作用が大きい。
+// ---------------------------------------------------------------------------
+
+const IX_WIDTH = 360;
+const IX_HEIGHT = 280;
+const IX_PAD = { top: 40, right: 24, bottom: 52, left: 64 };
+
+/** 因子Bの水準1・水準2の線のスタイル（色だけに頼らないよう線種と点の形も変える） */
+const IX_SERIES = [
+  { stroke: "stroke-indigo-500", fill: "fill-indigo-600", dash: undefined },
+  { stroke: "stroke-amber-500", fill: "fill-amber-600", dash: "6 4" },
+] as const;
+
+type InteractionFactor = { name: string; level1: string; level2: string };
+
+type InteractionProps = {
+  /** 横軸の因子 */
+  factorA: InteractionFactor;
+  /** 線で分ける因子 */
+  factorB: InteractionFactor;
+  /** cellMeans[Aの水準-1][Bの水準-1] */
+  cellMeans: readonly (readonly number[])[];
+  /** 縦軸の範囲。複数の図で揃えるときに渡す（省略時はこの図の値から決める） */
+  yDomain?: readonly [number, number];
+};
+
+export const InteractionChart = ({
+  factorA,
+  factorB,
+  cellMeans,
+  yDomain,
+}: InteractionProps) => {
+  const plotW = IX_WIDTH - IX_PAD.left - IX_PAD.right;
+  const plotH = IX_HEIGHT - IX_PAD.top - IX_PAD.bottom;
+  const bottom = IX_PAD.top + plotH;
+  const right = IX_WIDTH - IX_PAD.right;
+
+  const values = cellMeans.flat();
+  const [lo, hi] = yDomain ?? [Math.min(...values), Math.max(...values)];
+  const yAxis = niceAxis(lo, hi);
+  const sy = (y: number): number =>
+    IX_PAD.top + plotH - ((y - yAxis.min) / (yAxis.max - yAxis.min)) * plotH;
+
+  const xs = [IX_PAD.left + plotW * 0.2, IX_PAD.left + plotW * 0.8];
+  const aLabels = [factorA.level1, factorA.level2];
+  const bLabels = [factorB.level1, factorB.level2];
+  const name = `${factorA.name}×${factorB.name}`;
+
+  return (
+    <svg
+      viewBox={`0 0 ${IX_WIDTH} ${IX_HEIGHT}`}
+      style={{ maxWidth: IX_WIDTH, minWidth: IX_WIDTH * 0.75 }}
+      className="w-full h-auto bg-white rounded-lg border border-gray-200"
+      role="img"
+      aria-label={`交互作用図 ${name}`}
+    >
+      {/* 凡例：因子Bの水準 */}
+      <text x={IX_PAD.left} y={16} className="fill-gray-800 text-[12px]">
+        {truncate(factorB.name, 6)}:
+      </text>
+      {bLabels.map((label, lb) => {
+        const x = IX_PAD.left + 88 + lb * 104;
+        const s = IX_SERIES[lb];
+        return (
+          <g key={`legend-${lb}`}>
+            <line
+              x1={x}
+              y1={12}
+              x2={x + 24}
+              y2={12}
+              className={s.stroke}
+              strokeWidth={2}
+              strokeDasharray={s.dash}
+            />
+            <IxMarker kind={lb} x={x + 12} y={12} className={s.fill} />
+            <text x={x + 30} y={16} className="fill-gray-600 text-[12px]">
+              {truncate(label, 5)}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* 横グリッドと縦軸目盛り */}
+      {yAxis.ticks.map((t) => (
+        <g key={`y-${t}`}>
+          <line
+            x1={IX_PAD.left}
+            y1={sy(t)}
+            x2={right}
+            y2={sy(t)}
+            className="stroke-gray-100"
+          />
+          <text
+            x={IX_PAD.left - 8}
+            y={sy(t)}
+            textAnchor="end"
+            dominantBaseline="middle"
+            className="fill-gray-600 text-[12px]"
+          >
+            {formatTick(t)}
+          </text>
+        </g>
+      ))}
+
+      {/* 軸 */}
+      <line
+        x1={IX_PAD.left}
+        y1={bottom}
+        x2={right}
+        y2={bottom}
+        className="stroke-gray-500"
+      />
+      <line
+        x1={IX_PAD.left}
+        y1={IX_PAD.top}
+        x2={IX_PAD.left}
+        y2={bottom}
+        className="stroke-gray-500"
+      />
+      <text
+        transform={`translate(16 ${IX_PAD.top + plotH / 2}) rotate(-90)`}
+        textAnchor="middle"
+        className="fill-gray-800 text-[13px]"
+      >
+        平均値
+      </text>
+
+      {/* 横軸：因子Aの水準 */}
+      {aLabels.map((label, la) => (
+        <text
+          key={`a-${la}`}
+          x={xs[la]}
+          y={bottom + 18}
+          textAnchor="middle"
+          className="fill-gray-600 text-[12px]"
+        >
+          {truncate(label, 8)}
+        </text>
+      ))}
+      <text
+        x={IX_PAD.left + plotW / 2}
+        y={bottom + 40}
+        textAnchor="middle"
+        className="fill-gray-800 text-[13px] font-medium"
+      >
+        {truncate(factorA.name, 12)}
+      </text>
+
+      {/* 因子Bの水準ごとの線 */}
+      {bLabels.map((bLabel, lb) => {
+        const s = IX_SERIES[lb];
+        return (
+          <g key={`b-${lb}`}>
+            <line
+              x1={xs[0]}
+              y1={sy(cellMeans[0][lb])}
+              x2={xs[1]}
+              y2={sy(cellMeans[1][lb])}
+              className={s.stroke}
+              strokeWidth={2}
+              strokeDasharray={s.dash}
+            />
+            {[0, 1].map((la) => (
+              <IxMarker
+                key={la}
+                kind={lb}
+                x={xs[la]}
+                y={sy(cellMeans[la][lb])}
+                className={s.fill}
+                title={`${factorA.name}=${aLabels[la]}, ${factorB.name}=${bLabel}: ${cellMeans[la][lb].toFixed(3)}`}
+              />
+            ))}
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+/** 水準1は丸、水準2は四角 */
+const IxMarker = ({
+  kind,
+  x,
+  y,
+  className,
+  title,
+}: {
+  kind: number;
+  x: number;
+  y: number;
+  className: string;
+  title?: string;
+}) => {
+  const tooltip = title ? <title>{title}</title> : null;
+  return kind === 0 ? (
+    <circle
+      cx={x}
+      cy={y}
+      r={5}
+      className={`${className} stroke-white`}
+      strokeWidth={1.5}
+    >
+      {tooltip}
+    </circle>
+  ) : (
+    <rect
+      x={x - 5}
+      y={y - 5}
+      width={10}
+      height={10}
+      className={`${className} stroke-white`}
+      strokeWidth={1.5}
+    >
+      {tooltip}
+    </rect>
   );
 };
