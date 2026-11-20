@@ -3,7 +3,10 @@
 //生成AIコード
 import React, { useMemo, useState } from "react";
 import { computeL8Anova, L8 } from "../anova";
-import { ContributionChart, MainEffectsChart } from "./L8Charts";
+import {
+  ContributionChart,
+  MainEffectsChart,
+} from "@/app/exp-design/components/L8Charts";
 
 /**
  * L8(2^7) 直交表 — 超シンプル版

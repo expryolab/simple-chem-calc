@@ -2,6 +2,19 @@
 
 import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import {
+  ContributionChart,
+  InteractionChart,
+  MainEffectsChart,
+} from "@/app/exp-design/components/L8Charts";
+import { L8 } from "../../orthogonal-array-l8/anova";
+import {
+  assignColumns,
+  COLUMN_COUNT,
+  computeL8InteractionAnova,
+  interactionColumn,
+  type Pair,
+} from "../anova";
 
 /**
  * L8(2^7) 直交表 — 交互作用あり版
@@ -10,77 +23,25 @@ import { Button } from "@/components/ui/Button";
  * - 交互作用は 2×2 の組み合わせ平均でも確認できる
  */
 
-// 行: 8 ラン、列: C1..C7。値は水準(1/2)
-const L8: readonly (1 | 2)[][] = [
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 2, 2, 2, 2],
-  [1, 2, 2, 1, 1, 2, 2],
-  [1, 2, 2, 2, 2, 1, 1],
-  [2, 1, 2, 1, 2, 1, 2],
-  [2, 1, 2, 2, 1, 2, 1],
-  [2, 2, 1, 1, 2, 2, 1],
-  [2, 2, 1, 2, 1, 1, 2],
-] as const;
-
-const COLUMN_COUNT = 7;
-
-// 列番号(1..7)を3ビットで見ると、列iと列jの交互作用は列 (i XOR j) に現れる
-// 例: C1×C2→C3, C1×C4→C5, C2×C4→C6
-export const interactionColumn = (a: number, b: number) => a ^ b;
-
-// 交互作用は因子インデックスのペア [i, j] (i < j) で表す
-export type Pair = readonly [number, number];
-
-/**
- * 因子と交互作用が互いに重ならない(交絡しない)列割り当てを探す。
- * 戻り値は因子ごとの列番号(1..7)。割り当てられない場合は null。
- * 列番号の小さい順に探すので、教科書どおり A=C1, B=C2, C=C4 ... の形になりやすい。
- */
-export function assignColumns(
-  factorCount: number,
-  pairs: readonly Pair[],
-): number[] | null {
-  if (factorCount + pairs.length > COLUMN_COUNT) return null;
-
-  const columns: number[] = [];
-
-  const search = (k: number): boolean => {
-    if (k === factorCount) return true;
-    for (let c = 1; c <= COLUMN_COUNT; c++) {
-      if (columns.includes(c)) continue;
-      columns.push(c);
-      if (isConsistent(columns, pairs) && search(k + 1)) return true;
-      columns.pop();
-    }
-    return false;
-  };
-
-  return search(0) ? [...columns] : null;
-}
-
-// 割り当て済みの因子列と、両端が割り当て済みの交互作用列がすべて異なるか
-function isConsistent(columns: readonly number[], pairs: readonly Pair[]) {
-  const used = new Set(columns);
-  for (const [i, j] of pairs) {
-    if (i >= columns.length || j >= columns.length) continue;
-    const c = interactionColumn(columns[i], columns[j]);
-    if (used.has(c)) return false;
-    used.add(c);
-  }
-  return true;
-}
-
 // 入力する因子 (2水準ラベルだけ)
 type Factor = { id: string; name: string; level1: string; level2: string };
 
 // 交互作用は因子IDのペアで保持（因子の削除・並び替えに追従させるため）
 type Interaction = { a: string; b: string };
 
+// 分散分析表の1行（交互作用は効果を出さないので null）
+type EffectRow = {
+  name: string;
+  col: number;
+  ss: number;
+  df: number;
+  ms: number;
+  contribution: number;
+  effect: number | null;
+};
+
 const newId = () => Math.random().toString(36).slice(2, 9);
 const pairKey = (a: string, b: string) => [a, b].sort().join(":");
-
-const mean = (values: number[]) =>
-  values.reduce((sum, v) => sum + v, 0) / values.length;
 
 // 因子IDのペア → インデックスのペア（因子の並び順に揃える）
 const toPairs = (factors: Factor[], list: Interaction[]): Pair[] =>
@@ -187,101 +148,43 @@ export default function L8Interaction() {
 
   // 分散分析の計算
   const anovaTable = useMemo(() => {
-    const validResults = results.filter((r) => r !== null) as number[];
-    if (validResults.length !== 8 || factors.length === 0 || !factorColumns) {
-      return null;
-    }
-
-    const grandMean = mean(validResults);
-    const totalSS = validResults.reduce(
-      (sum, val) => sum + Math.pow(val - grandMean, 2),
-      0,
+    if (!factorColumns) return null;
+    const anova = computeL8InteractionAnova(
+      results,
+      factors.map((f) => f.name),
+      factorColumns,
+      pairs,
     );
+    if (!anova) return null;
 
-    // 列の水準1/2で結果を分けて平方和を求める（2水準なので自由度は1）
-    const columnStats = (col: number) => {
-      const level1Runs: number[] = [];
-      const level2Runs: number[] = [];
-      L8.forEach((row, runIdx) => {
-        (row[col - 1] === 1 ? level1Runs : level2Runs).push(
-          validResults[runIdx],
-        );
-      });
-      const mean1 = mean(level1Runs);
-      const mean2 = mean(level2Runs);
-      const ss =
-        level1Runs.length * Math.pow(mean1 - grandMean, 2) +
-        level2Runs.length * Math.pow(mean2 - grandMean, 2);
-      return { ss, mean1, mean2 };
-    };
-
-    const factorEffects = factors.map((factor, k) => {
-      const col = factorColumns[k];
-      const { ss, mean1, mean2 } = columnStats(col);
-      return {
-        name: factor.name,
-        col,
-        ss,
-        df: 1,
-        ms: ss,
-        mean1,
-        mean2,
-        effect: (mean2 - mean1) as number | null,
-      };
-    });
-
-    const interactionEffects = pairs.map(([i, j]) => {
-      const col = interactionColumn(factorColumns[i], factorColumns[j]);
-      const { ss } = columnStats(col);
-
-      // 2×2 の組み合わせ平均（各セル2ラン）
-      const cellMeans = ([1, 2] as const).map((la) =>
-        ([1, 2] as const).map((lb) =>
-          mean(
-            validResults.filter(
-              (_, runIdx) =>
-                L8[runIdx][factorColumns[i] - 1] === la &&
-                L8[runIdx][factorColumns[j] - 1] === lb,
-            ),
-          ),
-        ),
-      );
-
-      return {
-        name: `${factors[i].name}×${factors[j].name}`,
-        col,
-        ss,
-        df: 1,
-        ms: ss,
-        effect: null as number | null,
-        factorA: factors[i],
-        factorB: factors[j],
-        cellMeans,
-      };
-    });
-
-    const effects = [...factorEffects, ...interactionEffects];
-    const modelSS = effects.reduce((sum, e) => sum + e.ss, 0);
-
-    const errorSS = totalSS - modelSS;
-    const errorDf = COLUMN_COUNT - effects.length;
-    const errorMs = errorDf > 0 ? errorSS / errorDf : 0;
-
-    const contribution = (ss: number) =>
-      totalSS > 0 ? (ss / totalSS) * 100 : 0;
-
-    return {
-      effects: effects.map((e) => ({ ...e, contribution: contribution(e.ss) })),
-      factorEffects,
-      interactionEffects,
-      totalSS,
-      errorSS,
-      errorDf,
-      errorMs,
-      errorContribution: contribution(errorSS),
-      grandMean,
-    };
+    // 表示用に、交互作用には因子の情報を添え、効果の列は「-」にする
+    const interactionEffects = anova.interactionEffects.map((x) => ({
+      ...x,
+      factorA: factors[x.pair[0]],
+      factorB: factors[x.pair[1]],
+    }));
+    const effects: EffectRow[] = [
+      ...anova.factorEffects,
+      ...interactionEffects.map((x) => ({ ...x, effect: null })),
+    ];
+    return { ...anova, interactionEffects, effects };
   }, [results, factors, factorColumns, pairs]);
+
+  // グラフ用：因子の水準ラベルを添える
+  const chartEffects = (anovaTable?.factorEffects ?? []).map((f, idx) => ({
+    ...f,
+    level1: factors[idx].level1,
+    level2: factors[idx].level2,
+  }));
+
+  // 交互作用図の縦軸は全図で共通にして、線の開き具合を比べられるようにする
+  const allCellMeans = (anovaTable?.interactionEffects ?? []).flatMap((x) =>
+    x.cellMeans.flat(),
+  );
+  const interactionYDomain: [number, number] = [
+    Math.min(...allCellMeans),
+    Math.max(...allCellMeans),
+  ];
 
   // 便利関数
   const addFactor = () => {
@@ -671,6 +574,75 @@ export default function L8Interaction() {
         </section>
       )}
 
+      {/* グラフ */}
+      {anovaTable && (
+        <section className="bg-white rounded-2xl shadow p-4 space-y-6">
+          <h2 className="font-semibold">グラフ</h2>
+          <div>
+            <h3 className="font-semibold text-sm">要因効果図</h3>
+            <p className="text-xs text-gray-500 mt-1">
+              各因子の水準別平均を結んだ線です。傾きが大きいほど結果への影響が大きい因子です。破線は全体平均。
+            </p>
+            <div className="mt-3 overflow-x-auto">
+              <MainEffectsChart
+                effects={chartEffects}
+                grandMean={anovaTable.grandMean}
+              />
+            </div>
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm">寄与率</h3>
+            {anovaTable.totalSS > 0 ? (
+              <>
+                <p className="text-xs text-gray-500 mt-1">
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm bg-indigo-500 align-middle mr-1" />
+                  因子
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-500 align-middle ml-3 mr-1" />
+                  交互作用
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm bg-gray-300 align-middle ml-3 mr-1" />
+                  誤差
+                </p>
+                <div className="mt-3">
+                  <ContributionChart
+                    effects={chartEffects}
+                    interactions={anovaTable.interactionEffects}
+                    errorContribution={
+                      anovaTable.errorDf > 0
+                        ? Math.max(0, anovaTable.errorContribution)
+                        : null
+                    }
+                  />
+                </div>
+              </>
+            ) : (
+              <p className="text-xs text-gray-500 mt-1">
+                結果がすべて同じ値のため、寄与率は計算できません。
+              </p>
+            )}
+          </div>
+          {anovaTable.interactionEffects.length > 0 && (
+            <div>
+              <h3 className="font-semibold text-sm">交互作用図</h3>
+              <p className="text-xs text-gray-500 mt-1">
+                2つの因子の組み合わせ平均です。2本の線が平行なら交互作用は小さく、交差したり開いたりしているほど交互作用が大きいことを示します。縦軸はすべての図で共通です。
+              </p>
+              <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                {anovaTable.interactionEffects.map((x) => (
+                  <div key={x.name} className="overflow-x-auto">
+                    <InteractionChart
+                      factorA={x.factorA}
+                      factorB={x.factorB}
+                      cellMeans={x.cellMeans}
+                      yDomain={interactionYDomain}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
       <details className="text-sm text-gray-600">
         <summary className="cursor-pointer font-medium">機能説明</summary>
         <ul className="list-disc ml-5 mt-2 space-y-1">
@@ -683,6 +655,7 @@ export default function L8Interaction() {
           </li>
           <li>交互作用の平方和は、その交互作用が現れる列から計算します。</li>
           <li>効果：水準2の平均 - 水準1の平均。交互作用は2×2の組み合わせ平均で確認します。</li>
+          <li>交互作用図：線が平行なら交互作用は小さく、交差・開きが大きいほど交互作用が大きいと読みます。</li>
         </ul>
       </details>
     </div>

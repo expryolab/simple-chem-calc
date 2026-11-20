@@ -80,6 +80,28 @@ const Page = () => {
       </section>
 
       <section className="space-y-2">
+        <h2 className="text-lg font-semibold">5. グラフで確認する</h2>
+        <p className="text-sm text-gray-700">
+          分散分析表の下に、結果をグラフで表示します。
+        </p>
+        <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
+          <li>
+            要因効果図：因子ごとに水準1・水準2の平均値を線で結んだ図です。縦軸は全因子で共通なので、線の傾きが大きい因子ほど結果への影響が大きいと読み取れます。破線は全体平均です。
+          </li>
+          <li>
+            寄与率：因子（青）・交互作用（オレンジ）・誤差（灰色）の寄与率を大きい順に並べた棒グラフです。交互作用の棒が因子と同じくらい大きい場合は、因子単独ではなく組み合わせで条件を考える必要があります。
+          </li>
+          <li>
+            交互作用図：選んだ交互作用ごとに、横軸を1つ目の因子の水準、線を2つ目の因子の水準として組み合わせ平均を描いた図です。
+            2本の線が平行なら交互作用は小さく、交差したり開いたりしているほど交互作用が大きいことを示します。縦軸はすべての交互作用図で共通です。
+          </li>
+        </ul>
+        <p className="text-sm text-gray-700">
+          グラフの点や棒にカーソルを合わせると、正確な数値が表示されます。
+        </p>
+      </section>
+
+      <section className="space-y-2">
         <h2 className="text-lg font-semibold">注意点</h2>
         <ul className="list-disc ml-5 text-sm text-gray-700 space-y-1">
           <li>3因子以上の交互作用（A×B×Cなど）は扱いません。</li>
